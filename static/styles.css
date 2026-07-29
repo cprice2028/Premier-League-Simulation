@@ -1,0 +1,73 @@
+/* Base navigation styling */
+.navbar {
+display: flex;
+justify-content: space-between;
+align-items: center;
+background-color: #333;
+padding: 1rem 2rem;
+font-family: sans-serif;
+}
+
+/* Logo brand styling */
+.logo {
+color: white;
+font-size: 1.5rem;
+font-weight: bold;
+}
+
+/* Horizontal list setup */
+.nav-links {
+display: flex;
+list-style: none; /* Removes bullets */
+gap: 20px;       /* Spaces links apart */
+}
+
+/* Individual link formatting */
+.nav-links a {
+color: #ccc;
+text-decoration: none; /* Removes underline */
+font-size: 1rem;
+transition: color 0.3s;
+}
+
+/* Interactive hover and active feedback states */
+.nav-links a:hover, 
+.nav-links a.active {
+color: white;
+}
+
+/* Ensure the parent dropdown container acts as the anchor point */
+.dropdown-item {
+position: relative;
+}
+
+/* Hide the dropdown menu completely by default */
+.dropdown-menu {
+display: none;
+position: absolute;
+top: 100%;       /* Positions it exactly below the parent link */
+left: 0;
+background-color: #444;
+list-style: none;
+min-width: 160px;
+padding: 10px 0;
+box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+z-index: 100;     /* Ensures it overlays other page content */
+}
+
+/* Format the links inside the dropdown vertical list */
+.dropdown-menu li a {
+padding: 10px 20px;
+display: block;
+white-space: nowrap; /* Prevents long text from cutting off */
+}
+
+/* Reveal the hidden menu whenever the user hovers over the parent container */
+.dropdown-item:hover .dropdown-menu {
+display: block;
+}
+
+/* Add a subtle highlight to dropdown list entries on hover */
+.dropdown-menu li a:hover {
+background-color: #555;
+}
