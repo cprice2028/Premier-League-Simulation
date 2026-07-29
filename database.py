@@ -1,5 +1,6 @@
 import sqlite3
 from pteams import teams
+from simulation import generate_schedule
 DATABASE = "premier_league.db"
 
 
@@ -63,11 +64,126 @@ def add_team(name, attack_rating, defense_rating):
                 """,(name, attack_rating, defense_rating))
  connection.commit()
  connection.close()
-initialize_database()
+def get_team_ids():
+    connection = get_connection()
+    rows = connection.execute("""
+        SELECT id, name
+        FROM teams
+    """).fetchall()
 
-for team in teams.keys():
-    add_team(
-        team,
-        teams[team]["attack"],
-        teams[team]["defense"]
-    )
+    connection.close()
+
+    return {
+        row["name"]: row["id"]
+        for row in rows
+    }
+def add_all_teams():
+    initialize_database()
+    for team in teams.keys():
+        add_team(
+            team,
+            teams[team]["attack"],
+            teams[team]["defense"]
+        )
+        
+def create_schedule():
+    connection = get_connection()
+    cursor = connection.cursor()
+
+    existing_matches = cursor.execute("""
+        SELECT COUNT(*) AS total
+        FROM matches
+    """).fetchone()["total"]
+
+    if existing_matches > 0:
+        connection.close()
+        return
+
+    team_ids = get_team_ids()
+    schedule = generate_schedule(list(team_ids.keys()))
+
+    for gameweek_number, gameweek in enumerate(schedule, start=1):
+        for home_team, away_team in gameweek:
+            cursor.execute("""
+                INSERT INTO matches (
+                    gameweek,
+                    home_team_id,
+                    away_team_id
+                )
+                VALUES (?, ?, ?)
+            """, (
+                gameweek_number,
+                team_ids[home_team],
+                team_ids[away_team]
+            ))
+
+    connection.commit()
+    connection.close()
+def get_team_ids():
+    connection = get_connection()
+    rows = connection.execute("""
+        SELECT id, name
+        FROM teams
+    """).fetchall()
+
+    connection.close()
+
+    return {
+        row["name"]: row["id"]
+        for row in rows
+    }
+def get_standings():
+    pass
+
+def get_next_gameweek():
+    connection = get_connection()
+
+    row = connection.execute("""
+        SELECT MIN(gameweek) AS next_gameweek
+        FROM matches
+        WHERE played = 0
+    """).fetchone()
+
+    connection.close()
+    return row["next_gameweek"]
+
+def get_matches_for_gameweek(gameweek):
+    connection=get_connection()
+    matches=connection.execute("""
+        SELECT
+        matches.id
+        matches.gameweek
+        
+        home.id AS home_team_id
+        home.name AS home_team
+        home.attack AS home_attack
+        home.defense AS home_defense
+        
+        away.id AS away_team_id
+        away.name AS away_team
+        away.attack AS away_attack
+        away.defense AS away_defense
+        
+        FROM matches
+        
+        JOIN teams as home
+            ON matches.home_team_id=home.id
+        JOIN teams as away
+            ON matches.away_team_id=away.id
+        WHERE matches.gameweek = ?
+            AND matches.played=0
+                           """,(gameweek)).fetchall()
+    connection.close()
+    return matches
+
+def save_result_and_update_teams(match_id,home_team_id,away_team_id,home_goals,away_goal,):
+    pass
+
+def update_current_gameweek(gameweek):
+    pass
+
+def get_recent_results():
+    pass
+
+def reset_season():
+    pass
