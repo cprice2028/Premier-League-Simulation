@@ -26,4 +26,5 @@ def team(team_name):
     return render_template("team.html", team_name=team_name)
 
 if __name__ == "__main__":
+    setup_database()
     app.run(debug=True)
