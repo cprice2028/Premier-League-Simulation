@@ -130,13 +130,13 @@ def get_standings():
     connection=get_connection()
     standings=connection.execute("""
         SELECT *,
-            goals_for - goals_against = goal_difference
-            FROM teams
+            goals_for - goals_against AS goal_difference
+        FROM teams
         ORDER by
-            points DESC
-            goal_difference DESC
-            goals_for DESC
-            name ASC
+            points DESC,
+            goal_difference DESC,
+            goals_for DESC,
+            name ASC,
                                  """).fetchall()
     connection.close()
     return standings
@@ -159,19 +159,15 @@ def get_matches_for_matchweek(matchweek):
         SELECT
             matches.id,
             matches.matchweek,
-            
             home.id AS home_team_id,
             home.name AS home_team,
             home.attack_rating AS home_attack,
             home.defense_rating AS home_defense,
-            
             away.id AS away_team_id,
             away.name AS away_team,
             away.attack_rating AS away_attack,
-            away.defense_rating AS away_defense,
-        
+            away.defense_rating AS away_defense
         FROM matches
-        
         JOIN teams as home
             ON matches.home_team_id=home.id
         JOIN teams as away
@@ -202,7 +198,7 @@ def save_result_and_update_teams(match_id,home_team_id,away_team_id,home_goals,a
         WHERE id=?
             and played=0
         """,(home_goals,away_goals,match_id))
-    if cursor.rowcount()==0:
+    if cursor.rowcount==0:
         connection.close()
         return
     cursor.execute("""
@@ -231,31 +227,23 @@ def save_result_and_update_teams(match_id,home_team_id,away_team_id,home_goals,a
     connection.close()
 
 def update_current_matchweek(matchweek):
-    '''Open a database connection and cursor.
-        Update the row in season where id = 1.
-        Set current_matchweek equal to the supplied matchweek.
-        Check whether matchweek 38 has been completed.
-        Set season_complete to 1 when no unplayed matches remain; otherwise leave it as 0.
-        Commit the change and close the connection.'''
     connection=get_connection()
     cursor=connection.cursor()
-    cursor.execute("""
-                UPDATE season
-                SET current_matchweek=?
-                WHERE id=?
-                """,(matchweek,1))
     remaining=cursor.execute("""
         SELECT COUNT(*) AS total
         FROM matches
         WHERE played=0
         """).fetchone()
     remaining_matches=remaining["total"]
+    season_complete=0
     if remaining_matches==0:
-        cursor.execute("""
-            UPDATE season
-            SET c
-            """)
-    
+        season_complete=1
+    cursor.execute("""
+                    UPDATE season
+                    SET current_matchweek=?
+                        season_complete=?
+                    WHERE id=?
+                    """,(matchweek,season_complete,1))
     connection.commit()
     connection.close()
             
@@ -271,34 +259,76 @@ def get_current_matchweek():
     return row["current_matchweek"]
 
 def get_recent_results():
-    '''Open a database connection.
-        Select only matches where played = 1.
-        Join the teams table twice:
-        Once to obtain the home team’s name.
-        Once to obtain the away team’s name.
-        Retrieve the matchweek, team names, and both scores.
-        Sort with the newest matchweek first.
-        Use match ID as a secondary sort so the order is consistent.
-        Limit the result to 10 matches if the homepage shows the 10 most recent games.
-        Fetch the rows, close the connection, and return them.'''
+    connection=get_connection()
+    row=connection.execute("""
+        SELECT 
+            matches.id,
+            matches.matchweek,
+            home.name AS home_team,
+            away.name AS away_team,
+            matches.home_goals,
+            matches.away_goals
+        FROM matches
+        JOIN teams as home
+            ON matches.home_team_id = home.id
+        JOIN teams as away
+            ON matches.away_team_id = away.id
+        ORDER by
+            matches.matchweek DESC, matches.id DESC
+        WHERE matches.played=1
+        LIMIT 10    
+        """).fetchall()
+    connection.close()
+    return row
+    
+
+def get_team_matches(team_name):
+    connection = get_connection()
+    matches = connection.execute("""
+        SELECT
+            matches.id,
+            matches.matchweek,
+            home.name AS home_team,
+            away.name AS away_team,
+            matches.home_goals,
+            matches.away_goals,
+            matches.played
+        FROM matches
+        JOIN teams as home
+            ON matches.home_team_id = home.id
+        JOIN teams as away
+            ON matches.away_team_id = away.id
+        WHERE home.name = ?
+            OR away.name = ?
+        ORDER BY matches.matchweek
+    """, (team_name, team_name)).fetchall()
+    connection.close()
+    return matches
 
 def reset_season():
-    '''Open one database connection and cursor.
-        Reset every team’s statistics to zero:
-        Played
-        Wins
-        Draws
-        Losses
-        Goals for
-        Goals against
-        Points
-        Reset every match:
-        Set home_goals to NULL.
-        Set away_goals to NULL.
-        Set played to 0.
-        Reset the season row:
-        Set current_matchweek to 0.
-        Set season_complete to 0.
-        Do not delete the teams or fixture schedule.
-        Commit once after all reset operations.
-        Close the connection.'''
+    connection=get_connection()
+    cursor=connection.cursor()
+    cursor.execute("""
+        UPDATE teams
+        SET played=0,
+            wins=0,
+            draws=0,
+            losses=0,
+            goals_for=0,
+            goals_against=0,
+            points=0
+        """)
+    cursor.execute("""
+        UPDATE matches
+        SET home_goals=NULL,
+            away_goals=NULL,
+            played=0
+        """)
+    cursor.execute("""
+        UPDATE season
+        SET current_matchweek=0,
+            season_complete=0
+        WHERE id=1
+        """)
+    connection.commit()
+    connection.close()
