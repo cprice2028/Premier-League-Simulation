@@ -60,8 +60,14 @@ def add_team(name, attack_rating, defense_rating):
                 INSERT or IGNORE INTO teams
                 (name, attack_rating, defense_rating)
                 VALUES (?,?,?)
-                """)
+                """,(name, attack_rating, defense_rating))
  connection.commit()
  connection.close()
+initialize_database()
+
 for team in teams.keys():
- add_team(team,teams[team]["attack"],teams[team]["defense"])
+    add_team(
+        team,
+        teams[team]["attack"],
+        teams[team]["defense"]
+    )
