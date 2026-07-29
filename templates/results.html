@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Results</h1>
+
+{% for week, matches in all_matches.items %}
+    <h2>Matchweek {week}</h2>
+    {% for match in matches %}
+        <p>{{ match["home_team"] }} {{ match["home_score"] }} - {{ match["away_score"] }} {{ match["away_team"] }}</p>
+    {% endfor %}
+{% endfor %}
+
+{% endblock %}

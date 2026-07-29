@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>{{ team["name"] }}</h1>
+<h2>Ranked {{ team_rank }}</h2>
+<h2>Record: {{ team_info.wins }} wins, {{ team_info.losses }} losses, {{ team_info.draws }} draws</h2>
+
+<h2>Past Matches</h2>
+{% for match in matches %}
+    <p>{{ match["home_team"] }} {{ match["home_score"] }} - {{ match["away_score"] }} {{ match["away_team"] }}</p>
+{% endfor %}
+
+{% endblock %}
