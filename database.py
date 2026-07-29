@@ -244,18 +244,31 @@ def update_current_matchweek(matchweek):
                 SET current_matchweek=?
                 WHERE id=?
                 """,(matchweek,1))
-    matches=get_matches_for_matchweek(matchweek)
-    if len(matches)==0:
+    remaining=cursor.execute("""
+        SELECT COUNT(*) AS total
+        FROM matches
+        WHERE played=0
+        """).fetchone()
+    remaining_matches=remaining["total"]
+    if remaining_matches==0:
         cursor.execute("""
-                        UPDATE season
-                        SET season_complete=1
-                        WHERE id=?
-                        """,(1,))
+            UPDATE season
+            SET c
+            """)
+    
     connection.commit()
     connection.close()
             
 
-
+def get_current_matchweek():
+    connection=get_connection()
+    row = connection.execute("""
+            SELECT current_matchweek as current_matchweek
+            FROM season
+            WHERE id=1
+            """).fetchone()
+    connection.close()
+    return row["current_matchweek"]
 
 def get_recent_results():
     '''Open a database connection.
