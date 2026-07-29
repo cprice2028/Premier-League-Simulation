@@ -47,15 +47,15 @@ def generate_schedule(team):
             away_team=team_copy[len(team)-1-index]
             if home_team is not None and away_team is not None:
                 if matchweek%2==0:
-                    matches.append(home_team,away_team)
+                    matches.append((home_team,away_team))
                 else:
-                    matches.append(away_team,home_team)
+                    matches.append((away_team,home_team))
         matchweeks_first_half.append(matches)
         team_copy = [team_copy[0]] + [team_copy[-1]] + team_copy[1:-1]
     matchweeks_second_half=[]
     for matchweek in matchweeks_first_half:
         reversed_matches=[]
         for home_team, away_team in matchweek:
-            reversed_matches.append(away_team,home_team)
+            reversed_matches.append((away_team,home_team))
         matchweeks_second_half.append(reversed_matches)
     return matchweeks_first_half+matchweeks_second_half
