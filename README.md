@@ -39,30 +39,9 @@ The standings are then reordered according to the official Premier League rules.
 
 Note: Some commands may differ baced on the machine in use.
 
-1. Clone the repository:
+1. Open your browser and visit:
 
-git clone <repository-url>
-You might need to install git before doign this if you havn't already
-
-2. Navigate into the project folder:
-
-cd premierleague
-
-3. Install Flask:
-
-python -m pip install flask
-or
-py -m pip install flask
-
-4. Run the application:
-
-python app.py
-or
-py app.py
-
-5. Open your browser and visit:
-
-http://127.0.0.1:5000/
+https://premier-league-simulation-production.up.railway.app/
 
 
 ## Screenshots
@@ -99,5 +78,5 @@ Provides the match results for any match that you specify.
 
 ## Authors
 
+- Charles Price
 - Vihaan Madhavan
-- Charlie Price
