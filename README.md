@@ -34,7 +34,7 @@ Note: Some commands may differ baced on the machine in use.
 
    https://premier-league-simulation-production.up.railway.app/
 
-   Or
+Or
 
 1. Clone the repository:
 
