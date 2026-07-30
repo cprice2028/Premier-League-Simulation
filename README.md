@@ -34,7 +34,7 @@ Note: Some commands may differ baced on the machine in use.
 
    https://premier-league-simulation-production.up.railway.app/
 
-Or
+   Or
 
 1. Clone the repository:
 
@@ -70,21 +70,25 @@ python app.py
 
 ![Home Page top](images/home1.png)
 ![Home Page bottom](images/home2.png)
+
 Has the league table with all the basic statistics: points, wins, loses, draws, goals for, goals against, and goal differential. Also inludes the match scores for the current week of play.
 
 ### Team Page
 
 ![Team Page](images/teams.png)
+
 Provides all the teams match results aswell as their overall record and rank in the league.
 
 ### Latest Results
 
 ![Results](images/results.png)
+
 Lists all the matches played in the season week by week.
 
 ### Matchweek History
 
 ![History](images/history.png)
+
 Provides the match results for any match that you specify.
 
 ## Authors
