@@ -30,15 +30,15 @@
         </tr>
     {% endfor %}
 </table>
-<form action="{{ url_for('simulate_next_matchweek') }}" method="POST">
-    <button type="submit">Simulate Next Matchweek</button>
+<form action="{{ url_for('simulate_next_matchweek') }}" method="POST" >
+    <button type="submit"  {%if winner%}disabled{%endif%}>Simulate Next Matchweek</button>
 </form>
 
 <form action="{{ url_for('simulate_rest_of_season') }}" method="POST">
-    <button type="submit">Simulate Rest of Season</button>
+    <button type="submit" {%if winner%}disabled{%endif%}>Simulate Rest of Season</button>
 </form>
 
-<form action="{{ url_for('reset_season_route') }}" method="POST">
+<form action="{{ url_for('reset_season_route') }}" method="POST" id="reset-form">
     <button type="submit">Reset Season</button>
 </form>
 <section> 
@@ -64,6 +64,9 @@
     window.location.href = "/history/" + document.getElementById("index-matchweek").value;
   });
 </script>
+{% if winner %}
+    <p id="winner-message" data-winner="{{ winner }}"></p>
+{% endif %}
 <h2>Results for Matchweek {{ matchweek }}</h2>
 {% for result in recent_results %}
     <p>{{ result.home_team }} {{ result.home_goals }} - {{ result.away_goals }} {{ result.away_team }}</p>
