@@ -12,15 +12,6 @@ A web application built with Python, Flask, SQLite, HTML, CSS, and JavaScript th
 - SQLite database stores season progress even after the server is restarted
 - Reset the season and start a new simulation
 
-## Technologies Used
-
-- Python
-- Flask
-- SQLite
-- HTML
-- CSS
-- JavaScript
-
 ## How It Works
 
 Each team is assigned attack and defensive ratings. When a gameweek is simulated, match scores are generated using these ratings along with random probability to create realistic outcomes.
@@ -71,7 +62,7 @@ python app.py
 
 5. Open your browser and visit:
 
- http://127.0.0.1:5000/
+   http://127.0.0.1:5000/
 
 ## Screenshots
 
@@ -95,15 +86,6 @@ Lists all the matches played in the season week by week.
 
 ![History](images/history.png)
 Provides the match results for any match that you specify.
-
-## Future Improvements
-
-- Column in main table showing results from the teams last 5 games
-- Player statistics
-- Top scorers and assists tables
-- Multiple seasons
-- Injury and suspension simulation
-- Adjustable team strength ratings
 
 ## Authors
 
