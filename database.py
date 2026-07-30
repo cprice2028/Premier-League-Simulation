@@ -136,8 +136,8 @@ def get_standings():
             points DESC,
             goal_difference DESC,
             goals_for DESC,
-            name ASC,
-                                 """).fetchall()
+            name ASC
+        """).fetchall()
     connection.close()
     return standings
 
@@ -161,12 +161,10 @@ def get_matches_for_matchweek(matchweek):
             matches.matchweek,
             home.id AS home_team_id,
             home.name AS home_team,
-            home.attack_rating AS home_attack,
-            home.defense_rating AS home_defense,
             away.id AS away_team_id,
             away.name AS away_team,
-            away.attack_rating AS away_attack,
-            away.defense_rating AS away_defense
+            matches.home_goals,
+            matches.away_goals
         FROM matches
         JOIN teams as home
             ON matches.home_team_id=home.id
@@ -177,7 +175,28 @@ def get_matches_for_matchweek(matchweek):
                            """,(matchweek,)).fetchall()
     connection.close()
     return matches
-
+def get_completed_matches_for_matchweek(matchweek):
+    connection=get_connection()
+    matches=connection.execute("""
+        SELECT
+            matches.id,
+            matches.matchweek,
+            home.id AS home_team_id,
+            home.name AS home_team,
+            away.id AS away_team_id,
+            away.name AS away_team,
+            matches.home_goals,
+            matches.away_goals
+        FROM matches
+        JOIN teams as home
+            ON matches.home_team_id=home.id
+        JOIN teams as away
+            ON matches.away_team_id=away.id
+        WHERE matches.matchweek = ?
+            AND matches.played=1
+                            """,(matchweek,)).fetchall()
+    connection.close()
+    return matches
 def save_result_and_update_teams(match_id,home_team_id,away_team_id,home_goals,away_goals):
     if home_goals>away_goals:
         home_wins,home_draws,home_losses,home_points=1,0,0,3
@@ -240,7 +259,7 @@ def update_current_matchweek(matchweek):
         season_complete=1
     cursor.execute("""
                     UPDATE season
-                    SET current_matchweek=?
+                    SET current_matchweek=?,
                         season_complete=?
                     WHERE id=?
                     """,(matchweek,season_complete,1))
@@ -273,9 +292,9 @@ def get_recent_results():
             ON matches.home_team_id = home.id
         JOIN teams as away
             ON matches.away_team_id = away.id
+        WHERE matches.played=1
         ORDER by
             matches.matchweek DESC, matches.id DESC
-        WHERE matches.played=1
         LIMIT 10    
         """).fetchall()
     connection.close()

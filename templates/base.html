@@ -3,31 +3,21 @@
     <head>
         <title>Premier League Season Simulator</title>
         <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+        <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"
+        >
     </head>
+    <main class="container">
     <body>
         <nav class="navbar">
             <ul class="nav-links">
                 <li><a href="{{ url_for('home') }}">Home</a></li>
                 <li><a href="{{ url_for('results') }}">Results</a></li>
-
-                <li class="dropdown-item">
-                    <span>Teams ▾</span>
-
-                    <ul class="dropdown-menu">
-                        {% for team in teams_copy %}
-                            <li>
-                                <a href="{{ url_for('team', team_name=team['name']) }}">
-                                    {{ team['name'] }}
-                                </a>
-                            </li>
-                        {% endfor %}
-                    </ul>
-                </li>
             </ul>
         </nav>
-        <main>
             {% block content %}
             {% endblock %}
-        </main>
     </body>
+    </main>
 </html>

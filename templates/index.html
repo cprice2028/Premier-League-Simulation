@@ -5,24 +5,67 @@
 <h1>Premier League Table {{ matchweek }}</h1>
 
 <table>
+    <tr>
+        <td>Standing</td>
+        <td>Team Name</td>
+        <td>Points</td>
+        <td>Wins</td>
+        <td>Losses</td>
+        <td>Draws</td>
+        <td>Goals For</td>
+        <td>Goals Against</td>
+        <td>Goal Differential</td>
+    </tr>
     {% for team in standings %}
         <tr>
             <td>{{ loop.index }}</td>
-            <td>{{ team["name"] }}</td>
+            <td><a href="{{ url_for('team', team_name=team['name']) }}">{{ team["name"] }}</a></td>
             <td>{{ team["points"] }}</td>
             <td>{{ team["wins"] }}</td>
             <td>{{ team["losses"] }}</td>
             <td>{{ team["draws"] }}</td>
-            <td>{{ team["goals_forced"] }}</td>
-            <td>{{ team["goals_acceded"] }}</td>
+            <td>{{ team["goals_for"] }}</td>
+            <td>{{ team["goals_against"] }}</td>
             <td>{{ team["goal_difference"] }}</td>
         </tr>
     {% endfor %}
 </table>
+<form action="{{ url_for('simulate_next_matchweek') }}" method="POST">
+    <button type="submit">Simulate Next Matchweek</button>
+</form>
 
+<form action="{{ url_for('simulate_rest_of_season') }}" method="POST">
+    <button type="submit">Simulate Rest of Season</button>
+</form>
+
+<form action="{{ url_for('reset_season_route') }}" method="POST">
+    <button type="submit">Reset Season</button>
+</form>
+<section> 
+    <h2>View Matchweek Results</h2> 
+    <form id="index-history-form"> 
+    <label for="matchweek">Select a matchweek</label> 
+    <select name="matchweek" id="index-matchweek"> 
+        {% for week in range(1, 39) %} 
+        <option value="{{ week }}"
+        {% if week==1%}
+        selected
+        {% endif %}> 
+            Matchweek {{ week }} 
+        </option> 
+        {% endfor %} 
+    </select> 
+    <button type="submit">View Matchweek</button> 
+    </form> 
+</section>
+<script>
+  document.getElementById("index-history-form").addEventListener("submit", function(event) {
+    event.preventDefault();
+    window.location.href = "/history/" + document.getElementById("index-matchweek").value;
+  });
+</script>
 <h2>Results for Matchweek {{ matchweek }}</h2>
 {% for result in recent_results %}
-    <p>{{ result["home_team"] }} {{ result["home_score"] }} - {{ result["away_score"] }} {{ result["away_team"] }}</p>
+    <p>{{ result.home_team }} {{ result.home_goals }} - {{ result.away_goals }} {{ result.away_team }}</p>
 {% endfor %}
-
 {% endblock %}
