@@ -41,6 +41,9 @@
 <form action="{{ url_for('reset_season_route') }}" method="POST" id="reset-form">
     <button type="submit" class = "button1">Reset Season</button>
 </form>
+{% if winner %}
+    <p id="winner-message" data-winner="{{ winner }}" hidden></p>
+{% endif %}
 <section> 
     <h2>View Matchweek Results</h2> 
     <form id="index-history-form"> 
@@ -64,9 +67,6 @@
     window.location.href = "/history/" + document.getElementById("index-matchweek").value;
   });
 </script>
-{% if winner %}
-    <p id="winner-message" data-winner="{{ winner }}"></p>
-{% endif %}
 <h2>Results for Matchweek {{ matchweek }}</h2>
 {% for result in recent_results %}
     <p>{{ result.home_team }} {{ result.home_goals }} - {{ result.away_goals }} {{ result.away_team }}</p>

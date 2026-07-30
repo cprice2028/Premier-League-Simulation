@@ -1,4 +1,4 @@
-teams = {
+teams = { #teams in the 25/26 premier league season, a higher attack score is best, a lower defense score is best
     "Arsenal": {
         "attack": 1.36,
         "defense": 0.52

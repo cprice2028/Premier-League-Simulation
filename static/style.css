@@ -1,19 +1,20 @@
 body {
-    background-color: #230429;
+    background-color: #230429; 
 }
-
+/*purple background*/
 a {
     color: #ffffff;
     text-decoration: none;
 }
-
+/*white links with no underline*/
 .button1 {
     background-color: #360D3A;
     margin-left: 5px;
     border:1px solid black;
 }
-
+/*makes buttons purple with a faint black border*/
 p {
     width: fit-content;
     background-color: #16051e;
 }
+/*makes each piece of text have a purple background that only covers the area of the paragraph*/
