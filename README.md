@@ -43,6 +43,36 @@ Note: Some commands may differ baced on the machine in use.
 
 https://premier-league-simulation-production.up.railway.app/
 
+Or
+
+1. Clone the repository:
+
+```
+git clone <repository-url>
+```
+You might need to install git before doing this if you haven't already
+
+2. Navigate into the project folder:
+
+```
+cd Premier-League-Simulation
+
+```
+3. Install Flask:
+
+```
+python -m pip install -r requirements.txt
+```
+
+4. Run the application:
+
+```
+python app.py
+```
+
+5. Open your browser and visit:
+
+http://127.0.0.1:5000/
 
 ## Screenshots
 
