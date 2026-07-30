@@ -33,7 +33,7 @@ def poisson_goals(expected_goals):
     limit=math.exp(-expected_goals)
     while probability>limit:
         attempts+=1
-        probability*=random.random()
+        probability*=random.random()*.75    
     return attempts-1
 def generate_schedule(team):
     team_copy=team.copy()

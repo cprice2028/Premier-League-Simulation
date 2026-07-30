@@ -8,7 +8,11 @@
 
 <h2>Past Matches</h2>
 {% for match in matches %}
-    <p>{{ match.home_team }} {{ match.home_goals }} - {{ match.away_goals }} {{ match.away_team }}</p>
+    {% if match.home_goals is not none %}
+        <p>{{ match.home_team }} {{ match.home_goals }} - {{ match.away_goals }} {{ match.away_team }}</p>
+    {% else %}
+        <p>{{ match.home_team }} vs {{ match.away_team }}</p>
+    {% endif %}
 {% endfor %}
 
 {% endblock %}

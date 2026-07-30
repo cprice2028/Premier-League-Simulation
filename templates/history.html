@@ -17,13 +17,13 @@
    <button type="submit">View Results</button>
   </form>
 
-  {% if matches %}
-   {% for match in matches %}
-     <p>{{ match.home_team }} {{ match.home_goals }} - {{ match.away_goals}} {{ match.away_team }}</p>
-   {% endfor %}
-  {% else %}
-   <p>No matches were found for this matchweek.</p>
-  {% endif %}
+  {% for match in matches %}
+    {% if match.home_goals is not none %}
+        <p>{{ match.home_team }} {{ match.home_goals }} - {{ match.away_goals }} {{ match.away_team }}</p>
+    {% else %}
+        <p>{{ match.home_team }} vs {{ match.away_team }}</p>
+    {% endif %}
+  {% endfor %}
   <script>
    document.getElementById("history-form").addEventListener("submit", function(event) {
      event.preventDefault();

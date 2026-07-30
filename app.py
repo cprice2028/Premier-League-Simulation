@@ -23,6 +23,8 @@ def results():
     all_matches = {}
     for x in range(1, matchweek + 1):
         all_matches[x] = get_completed_matches_for_matchweek(x)
+    for y in range(matchweek + 1, 39):
+        all_matches[y] = get_matches_for_matchweek(y)
     return render_template("results.html", all_matches=all_matches)
 
 @app.route("/team/<team_name>")
@@ -70,7 +72,11 @@ def reset_season_route():
     return redirect(url_for("home"))
 @app.route("/history/<int:selected_matchweek>")
 def history(selected_matchweek):
-    matches=get_completed_matches_for_matchweek(selected_matchweek)
+    matchweek = get_current_matchweek()
+    if selected_matchweek <= matchweek:
+        matches=get_completed_matches_for_matchweek(selected_matchweek)
+    elif selected_matchweek > matchweek:
+        matches=get_matches_for_matchweek(selected_matchweek)
     return render_template("history.html",selected_matchweek=selected_matchweek,matches=matches)
 
 if __name__ == "__main__":

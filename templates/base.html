@@ -2,21 +2,18 @@
 <html>
     <head>
         <title>Premier League Season Simulator</title>
-        <link
-            rel="stylesheet"
-            href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"
-        >
-        <link
-        rel="stylesheet"
-        href="{{ url_for('static', filename='style.css') }}"
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+        <link 
+            rel="stylesheet" 
+            href="{{ url_for('static', filename='style.css') }}"
         >
     </head>
     <body>
     <main class="container">
         <nav class="navbar">
             <ul class="nav-links">
-                <li><a href="{{ url_for('home') }}">Home</a></li>
-                <li><a href="{{ url_for('results') }}">Results</a></li>
+                <li><a href="{{ url_for('home') }}" class = "button1">Home</a></li>
+                <li><a href="{{ url_for('results') }}" class = "button1">Results</a></li>
             </ul>
         </nav>
             {% block content %}

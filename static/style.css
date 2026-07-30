@@ -1,0 +1,19 @@
+body {
+    background-color: #230429;
+}
+
+a {
+    color: #ffffff;
+    text-decoration: none;
+}
+
+.button1 {
+    background-color: #360D3A;
+    margin-left: 5px;
+    border:1px solid black;
+}
+
+p {
+    width: fit-content;
+    background-color: #16051e;
+}

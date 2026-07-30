@@ -2,7 +2,7 @@
 
 {% block content %}
 
-<h1>Premier League Table {{ matchweek }}</h1>
+<h1>Premier League Table Matchweek {{ matchweek }}</h1>
 
 <table>
     <tr>
@@ -31,15 +31,15 @@
     {% endfor %}
 </table>
 <form action="{{ url_for('simulate_next_matchweek') }}" method="POST" >
-    <button type="submit"  {%if winner%}disabled{%endif%}>Simulate Next Matchweek</button>
+    <button type="submit"  {%if winner%}disabled{%endif%} class = "button1">Simulate Next Matchweek</button>
 </form>
 
 <form action="{{ url_for('simulate_rest_of_season') }}" method="POST">
-    <button type="submit" {%if winner%}disabled{%endif%}>Simulate Rest of Season</button>
+    <button type="submit" {%if winner%}disabled{%endif%} class = "button1">Simulate Rest of Season</button>
 </form>
 
 <form action="{{ url_for('reset_season_route') }}" method="POST" id="reset-form">
-    <button type="submit">Reset Season</button>
+    <button type="submit" class = "button1">Reset Season</button>
 </form>
 <section> 
     <h2>View Matchweek Results</h2> 
@@ -55,7 +55,7 @@
         </option> 
         {% endfor %} 
     </select> 
-    <button type="submit">View Matchweek</button> 
+    <button type="submit" class = "button1">View Matchweek</button> 
     </form> 
 </section>
 <script>
