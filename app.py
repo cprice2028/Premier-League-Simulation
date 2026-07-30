@@ -1,6 +1,7 @@
 from flask import *
 from database import *
 from simulation import *
+import os
 
 app = Flask(__name__)
 
@@ -69,4 +70,5 @@ def history(selected_matchweek):
     return render_template("history.html",selected_matchweek=selected_matchweek,matches=matches)
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000)) #accept incoming connections from any network interface
+    app.run(host="0.0.0.0", port=port)
