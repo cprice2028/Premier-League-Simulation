@@ -57,7 +57,7 @@ You might need to install git before doing this if you haven't already
 ```
 cd Premier-League-Simulation
 ```
-3. Install Flask:
+3. Install Dependencies:
 
 ```
 python -m pip install -r requirements.txt
