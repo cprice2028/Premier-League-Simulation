@@ -48,7 +48,7 @@ Or
 1. Clone the repository:
 
 ```
-git clone <repository-url>
+git clone https://github.com/cprice2028/Premier-League-Simulation.git
 ```
 You might need to install git before doing this if you haven't already
 
@@ -71,7 +71,7 @@ python app.py
 
 5. Open your browser and visit:
 
-http://127.0.0.1:5000/
+ http://127.0.0.1:5000/
 
 ## Screenshots
 
