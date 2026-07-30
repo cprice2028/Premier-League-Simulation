@@ -32,7 +32,7 @@ Note: Some commands may differ baced on the machine in use.
 
 1. Open your browser and visit:
 
-https://premier-league-simulation-production.up.railway.app/
+   https://premier-league-simulation-production.up.railway.app/
 
 Or
 
@@ -74,7 +74,7 @@ Has the league table with all the basic statistics: points, wins, loses, draws, 
 
 ### Team Page
 
-![Team Page](images/team.png)
+![Team Page](images/teams.png)
 Provides all the teams match results aswell as their overall record and rank in the league.
 
 ### Latest Results
