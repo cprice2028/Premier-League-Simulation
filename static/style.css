@@ -1,14 +1,19 @@
+:root {
+  color-scheme: light dark; 
+}
+/* tells browser website supports both light and dark mode and allows text color to change based on the browser theme as seen below */
 body {
     background-color: #230429; 
 }
 /*purple background*/
 a {
-    color: var(-text-color);
+    color: light-dark(black, white);
     text-decoration: none;
 }
 /*white links with no underline*/
 .button1 {
     background-color: #360D3A;
+    color: light-dark(white, white);
     margin-left: 5px;
     border:1px solid black;
 }
@@ -16,5 +21,9 @@ a {
 p {
     width: fit-content;
     background-color: #16051e;
+    color: light-dark(white, white);
 }
-/*makes each piece of text have a purple background that only covers the area of the paragraph*/
+/* makes each piece of text have a purple background that only covers the area of the paragraph*/
+h1, h2, h3, h4, h5, h6, title, label {
+    color: light-dark(white, white);
+}
