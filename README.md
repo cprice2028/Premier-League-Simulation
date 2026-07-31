@@ -54,15 +54,22 @@ cd Premier-League-Simulation
 python -m pip install -r requirements.txt
 ```
 
+4. Set up the virtual environment
+
+```
+python3 -m venv venv
+source venv/bin/activate
+```
+
 4. Run the application:
 
 ```
-python app.py
+gunicorn app:app --bind 0.0.0.0:5000
 ```
 
 5. Open your browser and visit:
 
-   http://127.0.0.1:5000/
+   http://0.0.0.0:5000/
 
 ## Screenshots
 

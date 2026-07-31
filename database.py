@@ -197,7 +197,7 @@ def get_completed_matches_for_matchweek(matchweek): #gets played matches for mat
                             """,(matchweek,)).fetchall()#joins team id from matches table and teams table
     connection.close()
     return matches
-def save_result_and_update_teams(match_id,home_team_id,away_team_id,home_goals,away_goals):
+def save_result_and_update_teams(match_id,home_team_id,away_team_id,home_goals,away_goals): #updates the match associated with match id
     if home_goals>away_goals:
         home_wins,home_draws,home_losses,home_points=1,0,0,3
         away_wins,away_draws,away_losses,away_points=0,0,1,0

@@ -3,7 +3,7 @@ body {
 }
 /*purple background*/
 a {
-    color: #ffffff;
+    color: var(-text-color);
     text-decoration: none;
 }
 /*white links with no underline*/
