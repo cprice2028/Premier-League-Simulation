@@ -48,26 +48,26 @@ You might need to install git before doing this if you haven't already
 ```
 cd Premier-League-Simulation
 ```
-3. Install Dependencies:
 
-```
-python -m pip install -r requirements.txt
-```
-
-4. Set up the virtual environment
+3. Set up the virtual environment
 
 ```
 python3 -m venv venv
 source venv/bin/activate
 ```
+4. Install Dependencies:
 
-4. Run the application:
+```
+python -m pip install -r requirements.txt
+```
+
+5. Run the application:
 
 ```
 gunicorn app:app --bind 0.0.0.0:5000
 ```
 
-5. Open your browser and visit:
+6. Open your browser and visit:
 
    http://0.0.0.0:5000/
 
