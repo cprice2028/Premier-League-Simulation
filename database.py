@@ -1,4 +1,4 @@
-from tqdm import tqdm
+#from tqdm import tqdm
 import sqlite3
 from pteams import teams
 from simulation import *
