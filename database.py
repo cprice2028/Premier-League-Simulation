@@ -1,6 +1,7 @@
+#from tqdm import tqdm
 import sqlite3
 from pteams import teams
-from simulation import generate_schedule
+from simulation import *
 DATABASE = "premier_league.db"
 
 
@@ -9,8 +10,8 @@ def get_connection(): #gets connection to database
  connection.row_factory = sqlite3.Row
  connection.execute("PRAGMA foreign_keys = ON")
  return connection
-def initialize_database():
- connection = get_connection()
+def initialize_database(connection):
+ #connection = get_connection()
  cursor = connection.cursor()
 
  cursor.execute("""
@@ -59,10 +60,10 @@ def initialize_database():
 """) #creates a row with an empty season
 
  connection.commit()
- connection.close()
+ #connection.close()
  
-def add_team(name, attack_rating, defense_rating): #adds team to team table
- connection=get_connection()
+def add_team(connection,name, attack_rating, defense_rating): #adds team to team table
+ #connection=get_connection()
  cursor=connection.cursor()
  
  cursor.execute("""
@@ -71,30 +72,30 @@ def add_team(name, attack_rating, defense_rating): #adds team to team table
                 VALUES (?,?,?)
                 """,(name, attack_rating, defense_rating))
  connection.commit()
- connection.close()
-def get_team_ids(): #gets the team id from the teams table
-    connection = get_connection()
+ #connection.close()
+def get_team_ids(connection): #gets the team id from the teams table
+    #connection = get_connection()
     rows = connection.execute("""
         SELECT id, name
         FROM teams
     """).fetchall()
 
-    connection.close()
+    #connection.close()
 
     return {
         row["name"]: row["id"]
         for row in rows
     }
-def add_all_teams(): #adds every team to the team table, calling the add team method
+def add_all_teams(connection): #adds every team to the team table, calling the add team method
     for team in teams.keys():
-        add_team(
+        add_team(connection,
             team,
             teams[team]["attack"],
             teams[team]["defense"]
         )
         
-def create_schedule(): # creates the schedule in matches, 380 matches to be exact, 38 for each team
-    connection = get_connection()
+def create_schedule(connection): # creates the schedule in matches, 380 matches to be exact, 38 for each team
+   
     cursor = connection.cursor()
 
     existing_matches = cursor.execute("""
@@ -103,10 +104,10 @@ def create_schedule(): # creates the schedule in matches, 380 matches to be exac
     """).fetchone()["total"]
 
     if existing_matches > 0: #if matches already exist, do not add more
-        connection.close()
+        #connection.close()
         return
 
-    team_ids = get_team_ids()
+    team_ids = get_team_ids(connection)
     schedule = generate_schedule(list(team_ids.keys())) #calls the generate schedule method in simulation.py
 
     for matchweek_number, matchweek in enumerate(schedule, start=1): #loops over all matches, starting at 1 up until 38
@@ -125,9 +126,9 @@ def create_schedule(): # creates the schedule in matches, 380 matches to be exac
             ))#inserts each match into matches
 
     connection.commit()
-    connection.close()
-def get_standings(): #gets current standings, ordering by the premier league table rules
-    connection=get_connection()
+    #connection.close()
+def get_standings(connection): #gets current standings, ordering by the premier league table rules
+    #connection=get_connection()
     standings=connection.execute("""
         SELECT *,
             goals_for - goals_against AS goal_difference
@@ -138,11 +139,11 @@ def get_standings(): #gets current standings, ordering by the premier league tab
             goals_for DESC,
             name ASC
         """).fetchall()
-    connection.close()
+    #connection.close()
     return standings
 
-def get_next_matchweek(): #gets next unplayed matchweek number
-    connection = get_connection()
+def get_next_matchweek(connection): #gets next unplayed matchweek number
+    #connection = get_connection()
 
     row = connection.execute("""
         SELECT MIN(matchweek) AS next_matchweek
@@ -150,11 +151,11 @@ def get_next_matchweek(): #gets next unplayed matchweek number
         WHERE played = 0
     """).fetchone()
 
-    connection.close()
+    #connection.close()
     return row["next_matchweek"]
 
-def get_matches_for_matchweek(matchweek): #gets unplayed matches for matchweek
-    connection=get_connection()
+def get_matches_for_matchweek(connection,matchweek): #gets unplayed matches for matchweek
+    #connection=get_connection()
     matches=connection.execute("""
         SELECT
             matches.id,
@@ -173,10 +174,10 @@ def get_matches_for_matchweek(matchweek): #gets unplayed matches for matchweek
         WHERE matches.matchweek = ?
             AND matches.played=0
                            """,(matchweek,)).fetchall()#joins team id from matches table and teams table
-    connection.close()
+    #connection.close()
     return matches
-def get_completed_matches_for_matchweek(matchweek): #gets played matches for matchweek
-    connection=get_connection()
+def get_completed_matches_for_matchweek(connection,matchweek): #gets played matches for matchweek
+    #connection=get_connection()
     matches=connection.execute("""
         SELECT
             matches.id,
@@ -195,9 +196,9 @@ def get_completed_matches_for_matchweek(matchweek): #gets played matches for mat
         WHERE matches.matchweek = ?
             AND matches.played=1
                             """,(matchweek,)).fetchall()#joins team id from matches table and teams table
-    connection.close()
+    #connection.close()
     return matches
-def save_result_and_update_teams(match_id,home_team_id,away_team_id,home_goals,away_goals): #updates the match associated with match id
+def save_result_and_update_teams(connection,match_id,home_team_id,away_team_id,home_goals,away_goals): #updates the match associated with match id
     if home_goals>away_goals:
         home_wins,home_draws,home_losses,home_points=1,0,0,3
         away_wins,away_draws,away_losses,away_points=0,0,1,0
@@ -207,7 +208,7 @@ def save_result_and_update_teams(match_id,home_team_id,away_team_id,home_goals,a
     else:
         home_wins,home_draws,home_losses,home_points=0,1,0,1
         away_wins,away_draws,away_losses,away_points=0,1,0,1  #creates a tuple for the match state based on home and away scores
-    connection = get_connection()
+    #connection = get_connection()
     cursor = connection.cursor()
     cursor.execute("""
         UPDATE matches
@@ -218,7 +219,7 @@ def save_result_and_update_teams(match_id,home_team_id,away_team_id,home_goals,a
             and played=0
         """,(home_goals,away_goals,match_id)) #updates the match in match table
     if cursor.rowcount==0:
-        connection.close()
+        #connection.close()
         return
     cursor.execute("""
         UPDATE teams
@@ -242,11 +243,11 @@ def save_result_and_update_teams(match_id,home_team_id,away_team_id,home_goals,a
                 points=points+?
             WHERE id=?
             """,(away_goals,home_goals,away_wins,away_draws,away_losses,away_points,away_team_id,)) #updates away team data in teams table
-    connection.commit()
-    connection.close()
+    #connection.commit()
+    #connection.close()
 
-def update_current_matchweek(matchweek): #updates current matchweek in the season
-    connection=get_connection()
+def update_current_matchweek(connection,matchweek): #updates current matchweek in the season
+    #connection=get_connection()
     cursor=connection.cursor()
     remaining=cursor.execute("""
         SELECT COUNT(*) AS total
@@ -264,21 +265,21 @@ def update_current_matchweek(matchweek): #updates current matchweek in the seaso
                     WHERE id=? 
                     """,(matchweek,season_complete,1)) #updates the current matchweek in seasons table, if the season is complete, update that column
     connection.commit()
-    connection.close()
+    #connection.close()
             
 
-def get_current_matchweek(): #gets current matchweek from seasons table
-    connection=get_connection()
+def get_current_matchweek(connection): #gets current matchweek from seasons table
+    #connection=get_connection()
     row = connection.execute("""
             SELECT current_matchweek as current_matchweek
             FROM season
             WHERE id=1
             """).fetchone()
-    connection.close()
+    #connection.close()
     return row["current_matchweek"]
 
-def get_recent_results(): #gets the last 10 played matches, last matchweek
-    connection=get_connection()
+def get_recent_results(connection): #gets the last 10 played matches, last matchweek
+    #connection=get_connection()
     row=connection.execute("""
         SELECT 
             matches.id,
@@ -297,12 +298,12 @@ def get_recent_results(): #gets the last 10 played matches, last matchweek
             matches.matchweek DESC, matches.id DESC
         LIMIT 10    
         """).fetchall() #gets data from matches table, orders them by decreasing order in terms of matchweek, then limits the games to the last 10
-    connection.close()
+    #connection.close()
     return row
     
 
-def get_team_matches(team_name): #gets matches for each team
-    connection = get_connection()
+def get_team_matches(connection,team_name): #gets matches for each team
+    #connection = get_connection()
     matches = connection.execute("""
         SELECT
             matches.id,
@@ -321,11 +322,11 @@ def get_team_matches(team_name): #gets matches for each team
             OR away.name = ?
         ORDER BY matches.matchweek
     """, (team_name, team_name)).fetchall() #gets match data for every home and away game with the specified team
-    connection.close()
+   # connection.close()
     return matches
 
-def reset_season(): #sets all season data to 0 or null, except for the team data needed to create schedule and determine a single matches score
-    connection=get_connection()
+def reset_season(connection): #sets all season data to 0 or null, except for the team data needed to create schedule and determine a single matches score
+    #connection=get_connection()
     cursor=connection.cursor()
     cursor.execute("""
         UPDATE teams
@@ -350,4 +351,34 @@ def reset_season(): #sets all season data to 0 or null, except for the team data
         WHERE id=1
         """)
     connection.commit()
+    #connection.close()
+    
+'''if __name__ =="__main__":
+    connection = get_connection()
+    initialize_database(connection)
+    add_all_teams(connection)
+    create_schedule(connection)
+    
+    winners={}
+    for i in tqdm(range(10000)):
+        while get_next_matchweek(connection) is not None: #loops until season has ended
+            next_matchweek=get_next_matchweek(connection)
+            if next_matchweek is None: #if the season is complete, dont continue
+                break
+            matches_for_matchweek=get_matches_for_matchweek(connection,next_matchweek) #get unplayed matches for matchweek
+            for match in matches_for_matchweek: 
+                home_goals_scored,away_goals_scored=simulate_game(match["home_team"],match["away_team"]) #simulates each game in the specific matchweek
+                save_result_and_update_teams(connection,match["id"],match["home_team_id"],match["away_team_id"],home_goals_scored,away_goals_scored) #updates the database
+            connection.commit()
+            update_current_matchweek(connection,next_matchweek) #updates season table
+            winner=None
+            standings=get_standings(connection)
+            if get_next_matchweek(connection) is None and len(standings) > 0:
+                winner = standings[0]["name"]
+                if winners.get(winner) is not None:
+                    winners[winner]+=1
+                else:
+                    winners[winner]=1
+        reset_season(connection)
     connection.close()
+    print(winners)'''

@@ -3,14 +3,23 @@ import math
 from pteams import teams
 
 def simulate_game(home, away): #simulates a single game and returns the score of the home team followed by the away team
-    home_attack = teams[home]["attack"]
-    home_defense = teams[home]["defense"]
-    away_attack = teams[away]["attack"]
-    away_defense = teams[away]["defense"]
+    away_attack=teams[away]["attack"]
+    home_defense=teams[home]["defense"]
+    away_defense=teams[away]["defense"]
+    home_attack=teams[home]["attack"]
+    
+    if random.random() < 0.28:
+        home_attack*=random.uniform(.5,.8)
+        home_defense*=random.uniform(1.25,1.5)
+    if random.random()< 0.28:
+        away_attack*=random.uniform(.5,.8)
+        away_defense*=random.uniform(1.25,1.5)
+
+    
     home_expected_goals=home_ex(home_attack,away_defense)
     away_expected_goals=away_ex(home_defense,away_attack)
-    home_goals=actual_goals(home_expected_goals)
-    away_goals=actual_goals(away_expected_goals)
+    home_goals=max(actual_goals(home_expected_goals),0)
+    away_goals=max(actual_goals(away_expected_goals),0)
     return (home_goals,away_goals)
 
 #calculates home and away expected goals, giving a slight home game advantage
@@ -26,7 +35,7 @@ def actual_goals(expected_goals):
     # keeps multiplying probability down until it drops below the limit
     while probability>limit:
         attempts+=1 #increases attempts
-        probability*=random.random()*.75   #makes the probability smaller reducing by a random amount, trying to reach the limit. multiplying by 0.75reduces amount of attempts, as the probability reduces faster, makes games center around 1-1, 2-1. more realistic soccer games
+        probability*=random.random()   #makes the probability smaller reducing by a random amount, trying to reach the limit. multiplying by 0.75reduces amount of attempts, as the probability reduces faster, makes games center around 1-1, 2-1. more realistic soccer games
     return attempts-1 #returns the number of attempts needed to reach the limit, which we use as the actual amount of goals scored
 def generate_schedule(team): #generates a master premier league schedule
     team_copy=team.copy() #creates a shallow copy of the teams dictionary
