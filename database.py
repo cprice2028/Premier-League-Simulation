@@ -1,8 +1,10 @@
-#from tqdm import tqdm
+from tqdm import tqdm
 import sqlite3
 from pteams import teams
 from simulation import *
+from multiprocessing import Pool,cpu_count
 DATABASE = "premier_league.db"
+#DATABASE=":memory:" toggle if you want to run mutltiple simulations
 
 
 def get_connection(): #gets connection to database
@@ -353,12 +355,15 @@ def reset_season(connection): #sets all season data to 0 or null, except for the
     connection.commit()
     #connection.close()
     
+
+#uncomment this to run single process    
 '''if __name__ =="__main__":
     connection = get_connection()
+    connection.execute("PRAGMA journal_mode=WAL").fetchone()
+    connection.execute("PRAGMA synchronous=NORMAL")
     initialize_database(connection)
     add_all_teams(connection)
     create_schedule(connection)
-    
     winners={}
     for i in tqdm(range(10000)):
         while get_next_matchweek(connection) is not None: #loops until season has ended
@@ -381,4 +386,36 @@ def reset_season(connection): #sets all season data to 0 or null, except for the
                     winners[winner]=1
         reset_season(connection)
     connection.close()
+    print(winners)'''
+
+
+
+#uncommenbt this to run multiprocessing
+'''def run_one_season(_):
+    connection = get_connection()
+    initialize_database(connection)
+    add_all_teams(connection)
+    create_schedule(connection)
+    winner = None
+    while get_next_matchweek(connection) is not None: #loops until season has ended
+        next_matchweek=get_next_matchweek(connection)
+        if next_matchweek is None: #if the season is complete, dont continue
+            break
+        matches_for_matchweek=get_matches_for_matchweek(connection,next_matchweek) #get unplayed matches for matchweek
+        for match in matches_for_matchweek: 
+            home_goals_scored,away_goals_scored=simulate_game(match["home_team"],match["away_team"]) #simulates each game in the specific matchweek
+            save_result_and_update_teams(connection,match["id"],match["home_team_id"],match["away_team_id"],home_goals_scored,away_goals_scored) #updates the database
+        connection.commit()
+        update_current_matchweek(connection,next_matchweek) #updates season table
+        standings=get_standings(connection)
+        if get_next_matchweek(connection) is None and len(standings) > 0:
+            winner = standings[0]["name"]
+    reset_season(connection)
+    return winner
+if __name__ =="__main__":
+    N=1000000
+    winners={}
+    with Pool(cpu_count()-1) as pool:
+        for winner in tqdm(pool.imap_unordered(run_one_season, range(N)), total=N):
+            winners[winner] = winners.get(winner, 0) + 1
     print(winners)'''
